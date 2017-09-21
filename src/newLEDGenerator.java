@@ -12,11 +12,15 @@ import moa.core.ObjectRepository;
 import moa.streams.InstanceStream;
 import moa.tasks.TaskMonitor;
 
+import java.util.Arrays;
+
 
 //I want to be able to set LEDGenerator parameters more easily
 public class newLEDGenerator extends moa.streams.generators.LEDGenerator{
     private static int num_irrelevant_attributes = 17;
     private static int noise_percentage = 10;
+    private static double[] class_gen_thresholds = new double[11];
+    private static boolean proportions_changed = false;
 
     public newLEDGenerator(){
     }
@@ -33,6 +37,38 @@ public class newLEDGenerator extends moa.streams.generators.LEDGenerator{
         } else {
             throw new IllegalArgumentException("Noise percentage has to be an int between 0 and 100");
         }
+    }
+
+    public void setClass_proportions (double[] class_proportions){
+
+        double sum = Arrays.stream(class_proportions).sum();
+
+        //Parameter checking
+        if (class_proportions.length != this.class_gen_thresholds.length - 1){
+            throw new IllegalArgumentException("Proportions have not been assigned to all classes");
+        } else if (sum == 0){
+            throw new IllegalArgumentException("Invalid proportion entered");
+        } else {
+            for (int i = 0; i < class_proportions.length; i++){
+                if (class_proportions[i] < 0){
+                    throw new IllegalArgumentException("Invalid proportion entered");
+                }
+            }
+        }
+
+        //Normalize proportions
+        for (int i = 0; i < class_proportions.length; i++){
+            class_proportions[i] = class_proportions[i]/sum;
+        }
+
+        //Generating from a uniform distribution, these form boundaries for what class is generated
+        this.class_gen_thresholds[0] = 0;
+        this.class_gen_thresholds[class_proportions.length] = 1;
+        for (int i = 1; i < class_proportions.length; i++){
+            this.class_gen_thresholds[i] = this.class_gen_thresholds[i-1] + class_proportions[i-1];
+        }
+
+        this.proportions_changed = true;
     }
 
     @Override
@@ -54,7 +90,8 @@ public class newLEDGenerator extends moa.streams.generators.LEDGenerator{
         }
 
         attributes.addElement(new Attribute("class", var8));
-        this.streamHeader = new InstancesHeader(new Instances(this.getCLICreationString(InstanceStream.class), attributes, 0));
+        this.streamHeader = new InstancesHeader(new Instances(this.getCLICreationString(InstanceStream.class),
+                attributes, 0));
         this.streamHeader.setClassIndex(this.streamHeader.numAttributes() - 1);
         this.restart();
     }
@@ -64,7 +101,20 @@ public class newLEDGenerator extends moa.streams.generators.LEDGenerator{
         InstancesHeader header = this.getHeader();
         DenseInstance inst = new DenseInstance((double)header.numAttributes());
         inst.setDataset(header);
-        int selected = this.instanceRandom.nextInt(10);
+
+        int selected = 0;
+        if (this.proportions_changed){
+            double n = this.instanceRandom.nextDouble();
+            for (int i = 1; i < this.class_gen_thresholds.length; i++){
+                if (n >= this.class_gen_thresholds[i-1] && n < this.class_gen_thresholds[i]) {
+                    selected = i - 1;
+                    break;
+                }
+            }
+
+        } else {
+            selected = this.instanceRandom.nextInt(10);
+        }
 
         int i;
         for(i = 0; i < 7; ++i) {

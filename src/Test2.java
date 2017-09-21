@@ -18,10 +18,10 @@ public class Test2 {
     //Named 'att1', 'att2', 'att3'..., 'class'
     private static newLEDGenerator STREAM = new newLEDGenerator(17, 10);
     //Number of instances to be generated
-    private static final int STREAMSIZE = 100;
+    private static final int STREAMSIZE = 50;
 
     //Define number of elements saved in each buffer
-    private static final int BUFFERSIZE = 5;
+    private static final int BUFFERSIZE = 20;
 
     //Define the number of classes
     private static final int NUMCLASSES = 10;
@@ -46,6 +46,8 @@ public class Test2 {
     public static void main(String[] args) {
         //Initialize the stream
         STREAM.prepareForUse();
+        double[] proportions = {5, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+        STREAM.setClass_proportions(proportions);
 
         //Get the stream attributes
         InstancesHeader header = STREAM.getHeader();

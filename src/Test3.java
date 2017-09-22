@@ -17,7 +17,7 @@ public class Test3 {
     /*User Defined Constants-----------------------------------------*/
     //First 7 attributes correspond to LED lights, next 17 are noise attributes and last is class
     //Named 'att1', 'att2', 'att3'..., 'class'
-    private static newLEDGenerator STREAM = new newLEDGenerator(0, 0);     //Parameters set true to UCI's original set
+    private static NewLEDGenerator STREAM = new NewLEDGenerator(0, 10);     //Parameters set true to UCI's original set
     //Number of instances to be generated
     private static final int STREAMSIZE = 100;
 

@@ -16,7 +16,7 @@ public class Test2 {
     /*User Defined Constants-----------------------------------------*/
     //First 7 attributes correspond to LED lights, next 17 are noise attributes and last is class
     //Named 'att1', 'att2', 'att3'..., 'class'
-    private static newLEDGenerator STREAM = new newLEDGenerator(17, 10);
+    private static NewLEDGenerator STREAM = new NewLEDGenerator(17, 10);
     //Number of instances to be generated
     private static final int STREAMSIZE = 50;
 
@@ -46,7 +46,7 @@ public class Test2 {
     public static void main(String[] args) {
         //Initialize the stream
         STREAM.prepareForUse();
-        double[] proportions = {5, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+        double[] proportions = {1, 1, 5, 1, 1, 1, 1, 1, 1, 1};
         STREAM.setClass_proportions(proportions);
 
         //Get the stream attributes

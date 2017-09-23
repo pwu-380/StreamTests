@@ -1,5 +1,7 @@
 /**
  * Created by Peter on 9/21/2017.
+ * This class maintains a windowed confusion matrix (actual class v. predicted class) incrementally for a set of
+ * test samples
  */
 
 import com.yahoo.labs.samoa.instances.Instance;
@@ -11,20 +13,22 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class PredictionMatrix {
-    private Classifier model;
-    private int numClasses;
-    private HashMap classes;
+    private Classifier model;           //Trained model
+    private int numClasses;             //Number of different classes
+    private HashMap classes;            //Mapping of class values to indices
 
-    private boolean windowed = false;
-    private int windowLength = 0;
+    private boolean windowed = false;   //Without a sliding window it just records all test results
+    private int windowLength = 0;       //Width of sliding window
 
-    private Queue<Integer[]> window;
-    private int matrix[][];
+    private Queue<Integer[]> window;    //Test results for all samples in the window
+    private int matrix[][];             //"Confusion matrix"
 
+    //Constructor for non-windowed matrix
     public PredictionMatrix(Classifier clf, HashMap classes){
         this(clf, classes, 0);
     }
 
+    //Constructor for windowed matrix
     public PredictionMatrix(Classifier clf, HashMap classes, int windowLength){
         this.model = clf;
         numClasses = classes.size();
@@ -39,12 +43,13 @@ public class PredictionMatrix {
         matrix =  new int[numClasses][numClasses];
     }
 
+    //Tests a single instance and records results
     public void predictUpdate (Instance instance){
-        //THIS MAY BREAK LATER, CROSS THAT BRIDGE WHEN I GET TO IT
         int actualClass = (int) classes.get(instance.classValue());
         int predictedClass = Utils.maxIndex(model.getVotesForInstance(instance));
         Integer[] pair = {actualClass, predictedClass};
 
+        //If windowed, whenever a new prediction is made, the oldest is removed from the matrix
         if (windowed){
             window.add(pair);
             if (window.size() > windowLength){
@@ -53,9 +58,11 @@ public class PredictionMatrix {
             }
         }
 
+        //Updates matrix
         matrix[actualClass][predictedClass]++;
     }
 
+    //Returns confusion matrix
     public int[][] getMatrix(){
         return matrix;
     }

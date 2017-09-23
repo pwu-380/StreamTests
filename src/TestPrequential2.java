@@ -122,6 +122,7 @@ public class TestPrequential2 {
             num_trained++;
 
             if (num_trained == 50){
+                //Prints results of the first window
                 matrix = predictionMatrix.getMatrix();
                 System.out.println("    0  1  2  3  4  5  6  7  8  9");
                 for (int i = 0; i < matrix.length; i++){
@@ -134,7 +135,7 @@ public class TestPrequential2 {
         instanceBuffer.emptyBuffers();
         matrix = predictionMatrix.getMatrix();
 
-        //Prints all the predictions
+        //Prints results of the last window
         System.out.println("    0  1  2  3  4  5  6  7  8  9");
         for (int i = 0; i < matrix.length; i++){
             System.out.println(i + ": " + Arrays.toString(matrix[i]));

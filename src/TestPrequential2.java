@@ -123,22 +123,17 @@ public class TestPrequential2 {
 
             if (num_trained == 50){
                 //Prints results of the first window
-                matrix = predictionMatrix.getMatrix();
-                System.out.println("    0  1  2  3  4  5  6  7  8  9");
-                for (int i = 0; i < matrix.length; i++){
-                    System.out.println(i + ": " + Arrays.toString(matrix[i]));
-                }
-                System.out.println("\n");
+                System.out.print("\nAfter 50 instances:");
+                System.out.printf("\nAccuracy: " + predictionMatrix.calcAccuracy());
+                predictionMatrix.printMatrix();
             }
         }
 
         instanceBuffer.emptyBuffers();
-        matrix = predictionMatrix.getMatrix();
 
         //Prints results of the last window
-        System.out.println("    0  1  2  3  4  5  6  7  8  9");
-        for (int i = 0; i < matrix.length; i++){
-            System.out.println(i + ": " + Arrays.toString(matrix[i]));
-        }
+        System.out.print("\nAfter 150 instances:");
+        System.out.printf("\nAccuracy: " + predictionMatrix.calcAccuracy());
+        predictionMatrix.printMatrix();
     }
 }

@@ -3,17 +3,12 @@
  * Starting to break things out into their own classes
  */
 
-import com.yahoo.labs.samoa.instances.Attribute;
 import com.yahoo.labs.samoa.instances.Instance;
-import com.yahoo.labs.samoa.instances.Instances;
 import com.yahoo.labs.samoa.instances.InstancesHeader;
 import moa.classifiers.Classifier;
 import moa.classifiers.bayes.NaiveBayesMultinomial;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class TestPrequential2 {
 

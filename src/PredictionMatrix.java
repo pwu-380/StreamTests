@@ -67,41 +67,52 @@ public class PredictionMatrix {
 
     /*These methods pertain to calculating various metrics from the matrix----------------------*/
     //Calculates the precision with respect to a specific class
+    //-1 indicates an indeterminate case
     public double calcPrecision (int classInd){
-        double positiveActual = matrix[classInd][classInd];         //Correctly predicted class e.g. true positives
-        double precision = 0;
+        double truePositive = matrix[classInd][classInd];            //Positive and correctly predicted
+        double precision;
+        double predictedPositive = 0;                                //All predicted positives e.g. TP + FP
 
-        if (positiveActual != 0){
-            double positivePredicted = 0;
-            for (int row = 0; row < numClasses; row++) {            //All predicted positives e.g. TP + FP
-                positivePredicted += matrix[row][classInd];
-            }
-            precision = positiveActual/positivePredicted;
+        for (int row = 0; row < numClasses; row++) {
+            predictedPositive += matrix[row][classInd];
+        }
+
+        if (predictedPositive == 0){
+            precision = -1;                                         //Identifies indeterminate case
+        } else {
+            precision = truePositive/predictedPositive;             //Otherwise calculates as normal
         }
         return precision;
     }
 
     //Calculates the recall with respect to a specific class
+    //-1 indicates an indeterminate case
     public double calcRecall (int classInd){
-        double positiveActual = matrix[classInd][classInd];         //Correctly predicted class e.g. true positives
-        double recall = 0;
+        double truePositive = matrix[classInd][classInd];           //Positive and correctly predicted
+        double recall;
+        double classGenerated = Arrays.stream(matrix[classInd]).sum();   //All actual positives e.g. TP + FN
 
-        if (positiveActual != 0){
-            double negativePredicted = Arrays.stream(matrix[classInd]).sum();   //All actual positives e.g. TP + FN
-            recall = positiveActual/negativePredicted;
+        if (classGenerated == 0){
+            recall = -1;                                            //Identifies indeterminate case
+        } else {
+            recall = truePositive/classGenerated;                   //Otherwise calculates as normal
         }
         return recall;
     }
 
     //Calculates the fscore with respect to a specific class
+    //-1 indicates an indeterminate case
     public double calcFScore (int classInd){
         double precision = calcPrecision(classInd);
         double recall = calcRecall(classInd);
         double fscore = 0;
 
-        if (precision + recall != 0){
+        if (precision == -1 || recall == -1){                       //Fscore is indeterminate if either recall or
+            fscore = -1;                                            //precision is indeterminate
+        }else if (precision + recall != 0){
             fscore = (2 * precision * recall)/(precision + recall);
         }
+
         return fscore;
     }
 
